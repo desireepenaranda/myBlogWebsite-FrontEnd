@@ -3,7 +3,6 @@ import axios from "axios";
 import useUser from "../pages/hooks/useUser";
 
 const AddCommentForm = ({ articleName, onArticleUpdated }) => {
-  const [name, setName] = useState("");
   const [commentText, setCommentText] = useState("");
   const { user } = useUser();
 
@@ -20,7 +19,6 @@ const AddCommentForm = ({ articleName, onArticleUpdated }) => {
     );
     const updatedArticle = response.data;
     onArticleUpdated(updatedArticle);
-    setName("");
     setCommentText("");
   };
   return (
