@@ -100,3 +100,18 @@ nav a:hover {
   border-bottom: 2px solid black;
   padding: 16px;
 }
+
+#login-form input, textarea {
+  display: block;
+  width: 300px;
+  padding: 8px;
+  border-radius: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  border: 2px solid blue;
+  margin-bottom: 16px;
+}
+
+#login-button {
+  display: inline-grid;
+}
