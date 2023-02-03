@@ -18,6 +18,8 @@ const AddCommentForm = ({ articleName, onArticleUpdated }) => {
       { headers }
     );
     const updatedArticle = response.data;
+    console.log("below is the update article from add comment form");
+    console.log(updatedArticle);
     onArticleUpdated(updatedArticle);
     setCommentText("");
   };

@@ -8,9 +8,10 @@ const useUser = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
       setUser(user);
+      // console.log("setting the user value ");
+      // console.log(user);
       setIsLoading(false);
     });
-
     return unsubscribe;
   }, []);
   return { user, isLoading };

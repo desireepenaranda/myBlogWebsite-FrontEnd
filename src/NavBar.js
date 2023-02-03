@@ -8,6 +8,9 @@ const NavBar = () => {
     <nav>
       <ul>
         <li>
+          <div className="nav-left">{user ? user.email : null}</div>
+        </li>
+        <li>
           <Link to="/">Home</Link>
         </li>
         <li>

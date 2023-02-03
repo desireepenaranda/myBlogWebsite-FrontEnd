@@ -11,13 +11,14 @@ const ArticlePage = () => {
   const [articleInfo, setArticleInfo] = useState({
     upvotes: 0,
     comments: [],
-    canUpvote: true,
+    canUpvote: false,
   });
-  const canUpvote = articleInfo.canUpvote;
+  //let canUpvote = articleInfo.canUpvote;
+
   console.log(articleInfo);
   const params = useParams();
   const articleId = params.articleId;
-  const { user, isLoading } = useUser();
+  let { user, isLoading } = useUser();
   const navigate = useNavigate();
 
   // put most of logic when loading data from server
@@ -25,24 +26,36 @@ const ArticlePage = () => {
   useEffect(() => {
     const loadArticleInfo = async () => {
       const token = user && (await user.getIdToken());
+
       const headers = token ? { authtoken: token } : {};
       const response = await axios.get(`/api/articles/${articleId}`, {
         headers,
       });
       const newArticleInfo = response.data;
-      console.log("value in use Effect for comments is below ");
-      console.log(newArticleInfo);
+      const upvoteIds = newArticleInfo.upvoteIds;
       setArticleInfo(newArticleInfo);
-      console.log("setting article innfo from useEffect");
+      setArticleInfo({ ...articleInfo, canUpvote: true });
+
+      for (let i = 0; i < upvoteIds.length; i++) {
+        if (user && upvoteIds[i] === user.uid) {
+          console.log("the upvoted value found a match");
+          console.log("user.uid id match is " + user.uid);
+          console.log("upvoteIds[i] match is " + upvoteIds[i]);
+
+          setArticleInfo({ ...articleInfo, canUpvote: false });
+        }
+      }
+      // console.log("can the suer upvoer" + canUpvote);
     };
 
     if (isLoading) {
+      console.log("value of isLoading is true so now user should have a value");
       loadArticleInfo();
     }
-  }, [isLoading, user, articleInfo, articleId]);
+  }, [isLoading, user, articleId, articleInfo]);
 
   const article = articles.find((article) => article.name === articleId);
-
+  console.log("add li e59");
   // function that makes a request to upvote
   const addUpvote = async () => {
     const token = user && (await user.getIdToken());
@@ -55,17 +68,23 @@ const ArticlePage = () => {
     const updatedArticle = response.data;
     setArticleInfo(updatedArticle);
   };
+
   if (!article) {
     return <NotFoundPage />;
   }
-  console.log("can user upvote" + canUpvote);
+  console.log("above the call for article innro cannUpVote");
+  console.log(
+    "cq------------------------------an user upvote" + articleInfo.canUpvote
+  );
   return (
     <div>
       <h1> {article.title}</h1>
       <div className={"upvotes-section"}>
         {user ? (
           <button onClick={addUpvote}>
-            {canUpvote ? "Upvote Article" : "Already upVoted"}
+            {articleInfo.canUpvote && articleInfo.canUpvote
+              ? "Upvote Article"
+              : "Already voted"}
           </button>
         ) : (
           <button
@@ -78,7 +97,9 @@ const ArticlePage = () => {
           </button>
         )}
 
-        <p>This article has {articleInfo.upvotes} upvote(s)</p>
+        {articleInfo.upvoteIds && (
+          <p>This article has {articleInfo.upvoteIds.length} upvote(s)</p>
+        )}
       </div>
 
       {article.content.map((paragraph, index) => (
